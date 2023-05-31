@@ -12,6 +12,32 @@ const AuthForm = () => {
     setIsLoading(false);
 
     if (isLogin) {
+      fetch(
+        "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDbQjM5ZHO-YFs3fe1rVxJb0vKfGBYqgWs",
+        {
+          method: "POST",
+          body: JSON.stringify({
+            email: emailAuthRef.current.value,
+            password: passwordAuthRef.current.value,
+            returnSecureToken: true,
+          }),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      ) .then((res) => {
+        if (res.ok) {
+          return res.json();
+        } else {
+          throw new Error("Authentication failed.");
+        }
+      })
+      .then((data) => {
+        console.log(data.idToken); // Store the token in state
+      })
+      .catch((err) => {
+        alert(err)
+      });
     } else {
       fetch(
         "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDbQjM5ZHO-YFs3fe1rVxJb0vKfGBYqgWs",
@@ -26,18 +52,20 @@ const AuthForm = () => {
             "Content-Type": "application/json",
           },
         }
-      ).then((res) => {
+      )
+      .then((res) => {
         if (res.ok) {
+          return res.json();
         } else {
-          res.json().then((data) => {
-            //console.log(data);
-            prompt(data);
-          });
+          throw new Error("Authentication failed.");
         }
       })
-      .catch((err)=>{
-        console.log(err)
+      .then((data) => {
+        console.log(data.idToken); // Store the token in state
       })
+      .catch((err) => {
+        alert(err)
+      });
     }
   };
 
