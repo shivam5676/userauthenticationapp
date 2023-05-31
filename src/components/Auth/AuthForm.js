@@ -1,12 +1,14 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useContext } from "react";
 
 import classes from "./AuthForm.module.css";
+import HeaderContext from "../../store/HeaderContext";
 
 const AuthForm = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setIsLoading] = useState(true);
   const emailAuthRef = useRef();
   const passwordAuthRef = useRef();
+ const ctx= useContext(HeaderContext)
   const submitHandler = (event) => {
     event.preventDefault();
     setIsLoading(false);
@@ -33,7 +35,10 @@ const AuthForm = () => {
         }
       })
       .then((data) => {
-        console.log(data.idToken); // Store the token in state
+        
+        ctx.addToken(data.idToken)
+        
+        // Store the token in context
       })
       .catch((err) => {
         alert(err)
